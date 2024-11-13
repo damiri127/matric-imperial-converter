@@ -78,8 +78,77 @@ suite('Unit Tests', function(){
             });
         });
     });
-    suite('Check convertHandler.getReturnUnit(initUnit)', function(){});
-    suite('Check convertHandler.getSpeelOutUnit(unit)', function(){});
-    suite('Check convertHandler.convert(num, unit)', function(){});
+    suite('Check convertHandler.getReturnUnit(initUnit)', function(){
+        // test for each valid input units
+        test('For Each Valid Units Input', function(){
+            let input = ["gal", "l", "mi", "km", "lbs", "kg"];
+            let expect = ["L", "gal", "km", "mi", "kg", "lbs"];
+            input.forEach(function(ele, i){
+                assert.equal(convertHandler.getReturnUnit(ele), expect[i]);
+            });
+        });
+    });
+
+    suite('Check convertHandler.getSpeelOutUnit(unit)', function(){
+        test('String unit for each valid input', function(){
+            let input = ["gal", "l", "mi", "km", "lbs", "kg"];
+            let expect = [
+                "gallons",
+                "liters",
+                "miles",
+                "kilometer",
+                "pounds",
+                "kilograms"
+            ];
+            input.forEach(function(ele, i){
+                assert.equal(convertHandler.spellOutUnit(ele), expect[i]);
+            });
+        });
+    });
+    suite('Check convertHandler.convert(num, unit)', function(){
+        // Check Result convert gal to L
+        test('Convert gal to L', function(){
+            let input = [4, "gal"];
+            let expect = 15.14164;
+            assert.approximately(convertHandler.convert(input[0], input[1]), expect, 0.1);
+        });
+        
+        // Check Result convert L to gal
+        test('Convert L to gal', function(){
+            let input = [10, "L"];
+            let expect = 2.64172;
+            assert.approximately(convertHandler.convert(input[0], input[1]), expect, 0.1);
+        });
+
+        // Check Result convert mi to km
+        test('Convert mi to km', function(){
+            let input = [3.2, "mi"];
+            let expect = 5.14989;
+            let expectUnit = "km";
+            assert.approximately(convertHandler.convert(input[0], input[1]), expect, 0.1);
+            assert.equal(convertHandler.getReturnUnit(input[1]), expectUnit);
+        });
+
+        // Check Result convert km to mi
+        test('Convert km to mi', function(){
+            let input = [1/2, "km"];
+            let expect = 0.31069;
+            assert.approximately(convertHandler.convert(input[0], input[1]), expect, 0.1);
+        });
+
+        // Check Result convert lbs to kg
+        test('Convert lbs to kg', function(){
+            let input = [20, "lbs"];
+            let expect = 9.07184;
+            assert.approximately(convertHandler.convert(input[0], input[1]), expect, 0.1);
+        });
+
+        // Check Result convert kg to lbs
+        test('Convert kg to lbs', function(){
+            let input = [2, "kg"];
+            let expect = 4.40925;
+            assert.approximately(convertHandler.convert(input[0], input[1]), expect, 0.1);
+        });
+    });
 
 });
