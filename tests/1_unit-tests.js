@@ -71,11 +71,11 @@ suite('Unit Tests', function(){
             input.forEach(function(ele, index){
                 assert.equal(convertHandler.getUnit(ele), output[index]);
             });
+        });
 
-            test('Invalid input unit', function(){
-                let input = "30cm";
-                assert.equal(convertHandler.getUnit(input), undefined);
-            });
+        test('Invalid input unit', function(){
+            let input = "30cm";
+            assert.equal(convertHandler.getUnit(input), undefined);
         });
     });
     suite('Check convertHandler.getReturnUnit(initUnit)', function(){
@@ -96,7 +96,7 @@ suite('Unit Tests', function(){
                 "gallons",
                 "liters",
                 "miles",
-                "kilometer",
+                "kilometers",
                 "pounds",
                 "kilograms"
             ];
@@ -112,7 +112,7 @@ suite('Unit Tests', function(){
             let expect = 15.14164;
             assert.approximately(convertHandler.convert(input[0], input[1]), expect, 0.1);
         });
-        
+
         // Check Result convert L to gal
         test('Convert L to gal', function(){
             let input = [10, "L"];

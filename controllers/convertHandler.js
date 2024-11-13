@@ -85,7 +85,7 @@ function ConvertHandler() {
     let unit = initUnit.toLowerCase();
     switch(unit){
       case 'km':
-        return "kilometer";
+        return "kilometers";
       case 'gal':
         return "gallons";
       case 'mi':
