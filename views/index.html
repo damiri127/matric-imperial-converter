@@ -1,59 +1,171 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
     <title>Metric/Imperial Converter</title>
     <meta name="description" content="An example of the Free Code Camp Metric/Imperial Converter Project">
     <link id="favicon" rel="icon" href="https://cdn.freecodecamp.org/universal/favicons/favicon-32x32.png" type="image/x-icon">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="./public/style.css">
-  </head>
-  <body>
+    
+    <!-- External Style -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Inline CSS for Simplicity -->
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        header h1 {
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        section {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px 0;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h3 {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        code {
+            display: block;
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 1em;
+            color: #e74c3c;
+        }
+
+        /* Form Styling */
+        #convertForm {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        #convertField {
+            flex: 1;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #convert {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #convert:hover {
+            background-color: #2980b9;
+        }
+
+        #result {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-top: 10px;
+        }
+
+        #jsonResult {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            code {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
     <header>
-      <h1>Metric/Imperial Converter</h1>
+        <h1>Metric/Imperial Converter</h1>
     </header>
-    <hr style='margin: 50px'>
+
     <section>
-      <h3>Example usage</h3>
-      <code>/api/convert?input=4gal</code><br>
-      <code>/api/convert?input=1/2km</code><br>
-      <code>/api/convert?input=5.4/3lbs</code><br>
-      <code>/api/convert?input=kg</code><br>
-      <h3>Example return</h3>
-      <code>{ initNum: 3.1, initUnit: 'mi', returnNum: 4.98895, returnUnit: 'km', string: '3.1 miles converts to 4.98895 kilometers' }</code>
+        <h3>Example Usage</h3>
+        <code>/api/convert?input=4gal</code>
+        <code>/api/convert?input=1/2km</code>
+        <code>/api/convert?input=5.4/3lbs</code>
+        <code>/api/convert?input=kg</code>
+
+        <h3>Example Return</h3>
+        <code>{ initNum: 3.1, initUnit: 'mi', returnNum: 4.98895, returnUnit: 'km', string: '3.1 miles converts to 4.98895 kilometers' }</code>
     </section>
-    <hr style='margin: 50px'>
+
     <section>
-      <div id='testui' >
-        <h3 style="text-align: left">Front-End</h3>
-        <form id="convertForm" class="border">
-          <input type="text" id="convertField" name="input" placeholder="3.1mi" style="width: 200px">
-          <input id="convert" type="submit" value='Convert!'>
-        </form>
-        <p id='result'></p>
-        <code id='jsonResult'></code>
-      </div>
+        <div id="testui">
+            <h3>Convert Units</h3>
+            <form id="convertForm">
+                <input type="text" id="convertField" name="input" placeholder="Enter value, e.g., 3.1mi">
+                <button id="convert" type="submit"><i class="fas fa-exchange-alt"></i> Convert</button>
+            </form>
+            <p id="result"></p>
+            <code id="jsonResult"></code>
+        </div>
     </section>
-    <!-- Your web-app is https, so your scripts need to be too -->
+
+    <!-- External JavaScript -->
     <script src="https://code.jquery.com/jquery-2.2.1.min.js"
             integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
             crossorigin="anonymous"></script>
+    
     <script>
-      $(function() {
-        $('#convertForm').submit(function(event) {
-          event.preventDefault();
-          $.ajax({
-            url: '/api/convert',
-            type: 'get',
-            data: $('#convertForm').serialize(),
-            success: function(data) {
-              $('#result').text(data.string || data);
-              $('#jsonResult').text(JSON.stringify(data));
-            }
-          });
+        $(function() {
+            $('#convertForm').submit(function(event) {
+                event.preventDefault();
+                $.ajax({
+                    url: '/api/convert',
+                    type: 'get',
+                    data: $('#convertForm').serialize(),
+                    success: function(data) {
+                        $('#result').text(data.string || data);
+                        $('#jsonResult').text(JSON.stringify(data, null, 2));
+                    }
+                });
+            });
         });
-      });
-   </script>
-  </body>
+    </script>
+</body>
 </html>
